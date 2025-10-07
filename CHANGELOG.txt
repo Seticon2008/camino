@@ -1,0 +1,30 @@
+August 1, 2025
+Version 1.1.0
+
+
+SPLIT PROGRAM INTO 3 MAIN COMPONENTS:
+-Bank.java: Superclass, handles all file operations such as creating and removing account files, month files within accounts, and charges within a month.
+
+-BankInterface.java: Driver class, extends Bank.java, provides console UI for user to view database. Doesn't allow user to manipulate database.
+
+-BankOpInterface.java: Driver class, extends BankInterface.java, provides console UI for user to view database as well as add and remove accounts, months within accounts, and charges within months.
+
+
+OTHER COMPONENTS:
+-Charge.java: represents a charge
+
+-ChargeList.java: holds a list of charges
+
+-ChargeListIterator.java: allows iterating through charge list using enhanced for loop
+
+
+UI:
+Input code to remove an account, month, or charge has been changed from -1 or 2 to -128.
+
+Displaying list of charges no longer gives a numeric menu selection to choose how to operate on list. The user can now immediately add a new charge by entering a unique charge ID.
+
+Charges in a month now uniquely identified with 4-digit integers (0101-3199). First 2 digits correspond to the day of the month the charge was made. Last 2 digits correspond to the charge made of that day.
+
+
+BUG FIXES:
+Creating a new account now also creates the proper files within the account
