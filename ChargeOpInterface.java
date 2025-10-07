@@ -4,53 +4,40 @@ in different months on different accounts. User can view, add, and remove accoun
 of different accounts, and charges made in different months.
 
 TODO:
-This class inherits from BankInterface.java, inheriting its selectAccount() 
-and selectMonth() methods that it doesn't use. I propose we create a
-different superclass that BankInterface.java and this class both inherit from
-that only contains the display methods that each class needs.
-
-I also propose we no longer have the interface classes inherit from the Bank.java 
-class. Bank.java is a general-purpose class that will be used to operate on the 
-database when the web application is developed. The interface subclasses won't be 
-needed for that.
 */
 
 import java.util.Scanner;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.BufferedReader;
-
-import java.util.List;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.TreeMap;
-
-public class BankOpInterface extends BankInterface
+public class ChargeOpInterface extends ChargeViewer
 {
+	private Scanner scanner;	// scanner object for reading user input
+	
+	private boolean quitProgramRequest = false;	// if user wants to exit program
+	private boolean exitAccountRequest = false;	// if user wants to back out of account
 	public boolean exitMonthRequest = false;	// if user wants to back out of month
+	
 	public String addRequest = "";				// holds account/month name user wants to add
 	public boolean removeRequest = false;		// if user wants to remove account/month
 	
 	// constructor
-	public BankOpInterface()
+	public ChargeOpInterface()
 	{
 		super();
+		this.scanner = new Scanner(System.in); // instantiates scanner object
 	}
 	
 	// deselects account and month, resets user requests
-	@Override
 	public void resetAll()
 	{
-		super.resetAll();
+		chargeFileManager.resetAll();
+		this.exitAccountRequest = false;
 		this.resetMonth();
 	}
 	
 	// deselects month, resets user requests
-	@Override
 	public void resetMonth()
 	{
-		super.resetMonth();
+		chargeFileManager.resetMonth();
 		this.exitMonthRequest = false;
 		this.addRequest = "";
 		this.removeRequest = false;
@@ -79,7 +66,7 @@ public class BankOpInterface extends BankInterface
 			this.quitProgramRequest = true;
 		else if(operation.equals("-128")) // does user want to remove an account?
 			this.removeRequest = true;
-		else if(this.selectAccount(operation)) // can specified account be selected?
+		else if(chargeFileManager.selectAccount(operation)) // can specified account be selected?
 			accountSelected = true;
 		else // user entered non-existing account
 			this.addRequest = input;
@@ -113,14 +100,14 @@ public class BankOpInterface extends BankInterface
 				this.exitAccountRequest = true;
 			else if(operation == -128) // does user want to remove a month?
 				this.removeRequest = true;
-			else if(selectMonth(operation)) // can specified month be selected?
+			else if(chargeFileManager.selectMonth(operation)) // can specified month be selected?
 				monthSelected = true;
 			else // user entered non-existing month
 				this.addRequest = input;
 		}
 		catch(Exception e) // user entered invalid integer
 		{
-			this.infoMessage = "ERROR: Valor no válida. Inténtalo de nuevo.";
+			chargeFileManager.infoMessage = "ERROR: Valor no válida. Inténtalo de nuevo.";
 		}
 		return monthSelected;
 	}
@@ -147,7 +134,7 @@ public class BankOpInterface extends BankInterface
 		}
 		catch(Exception e) // user entered invalid integer
 		{
-			this.infoMessage = "ERROR: Valor no válida. Inténtalo de nuevo.";
+			chargeFileManager.infoMessage = "ERROR: Valor no válida. Inténtalo de nuevo.";
 		}
 	}
 	
@@ -165,9 +152,9 @@ public class BankOpInterface extends BankInterface
 		String accountName = this.addRequest;
 		
 		if(confirmMessage("Agregar cuenta especificada?")) // does user confirm their request?
-			accountAdded = this.addAccount(accountName); // can specified account be added?
+			accountAdded = chargeFileManager.addAccount(accountName); // can specified account be added?
 		else // user denied confirmation
-			this.infoMessage = "Operación detenida.";
+			chargeFileManager.infoMessage = "Operación detenida.";
 		
 		this.addRequest = "";
 		return accountAdded;
@@ -191,9 +178,9 @@ public class BankOpInterface extends BankInterface
 		accountName = input = this.scanner.nextLine();
 		
 		if(confirmMessage("Borrar cuenta especificada?")) // does user confirm their request?
-			accountRemoved = this.removeAccount(accountName); // can specified account be removed?
+			accountRemoved = chargeFileManager.removeAccount(accountName); // can specified account be removed?
 		else // user denied confirmation
-			this.infoMessage = "Operación detenida.";
+			chargeFileManager.infoMessage = "Operación detenida.";
 		
 		this.removeRequest = false;
 		return accountRemoved;
@@ -217,13 +204,13 @@ public class BankOpInterface extends BankInterface
 		{
 			month = Integer.valueOf(this.addRequest); // potentially throws exception
 			if(confirmMessage("Agregar mes especificado?")) // does user confirm their request?
-				monthAdded = this.addMonth(month); // can specified month be added?
+				monthAdded = chargeFileManager.addMonth(month); // can specified month be added?
 			else // user denied confirmation
-				this.infoMessage = "Operación detenida.";
+				chargeFileManager.infoMessage = "Operación detenida.";
 		}
 		catch(Exception e) // user entered invalid integer
 		{
-			this.infoMessage = "ERROR: Valor no válida.";
+			chargeFileManager.infoMessage = "ERROR: Valor no válida.";
 		}
 		this.addRequest = "";
 		return monthAdded;
@@ -250,13 +237,13 @@ public class BankOpInterface extends BankInterface
 		{
 			month = Integer.valueOf(input); // potentially throws exception
 			if(confirmMessage("Borrar mes especificado?")) // does user confirm their request?
-				monthRemoved = this.removeMonth(month); // can specified month be removed?
+				monthRemoved = chargeFileManager.removeMonth(month); // can specified month be removed?
 			else // user denied confirmation
-				this.infoMessage = "Operación detenida.";
+				chargeFileManager.infoMessage = "Operación detenida.";
 		}
 		catch(Exception e) // user entered invalid integer
 		{
-			this.infoMessage = "ERROR: Valor no válida.";
+			chargeFileManager.infoMessage = "ERROR: Valor no válida.";
 		}
 		this.removeRequest = false;
 		return monthRemoved;
@@ -301,14 +288,14 @@ public class BankOpInterface extends BankInterface
 			if(confirmMessage("Agregar carga especificada?")) // does user confirm their request?
 			{
 				Charge charge = new Charge(chargeId, chargeAmount, chargeReason);
-				chargeAdded = this.addCharge(charge); // can specified charge be added?
+				chargeAdded = chargeFileManager.addCharge(charge); // can specified charge be added?
 			}
 			else // user denied confirmation
-				this.infoMessage = "Operación detenida.";
+				chargeFileManager.infoMessage = "Operación detenida.";
 		}
 		catch(Exception e) // user entered invalid integer or float
 		{
-			this.infoMessage = "ERROR: Valor no válida.";
+			chargeFileManager.infoMessage = "ERROR: Valor no válida.";
 		}
 		this.addRequest = "";
 		return true;
@@ -338,13 +325,13 @@ public class BankOpInterface extends BankInterface
 		{
 			chargeId = Integer.valueOf(input); // potentially throws exception
 			if(confirmMessage("Borrar carga especificada?")) // does user confirm their request?
-				chargeRemoved = this.removeCharge(chargeId); // can specified charge be removed?
+				chargeRemoved = chargeFileManager.removeCharge(chargeId); // can specified charge be removed?
 			else // user denied confirmation
-				this.infoMessage = "Operación detenida.";
+				chargeFileManager.infoMessage = "Operación detenida.";
 		}
 		catch(Exception e) // user entered invalid integer
 		{
-			this.infoMessage = "ERROR: Valor no válida.";
+			chargeFileManager.infoMessage = "ERROR: Valor no válida.";
 		}
 		this.removeRequest = false;
 		return chargeRemoved;
@@ -368,42 +355,42 @@ public class BankOpInterface extends BankInterface
 	// driver
 	public static void main(String[] args)
 	{
-		BankOpInterface bank = new BankOpInterface();
+		ChargeOpInterface chargeOpInterface = new ChargeOpInterface();
 		
 		boolean selected = false; // specifies whether user successfully selects existing account/month
 		
-		while(bank.quitProgramRequest == false) // loops until user wants to exit program
+		while(chargeOpInterface.quitProgramRequest == false) // loops until user wants to exit program
 		{
-			bank.resetAll();
-			bank.displayAccounts();
-			selected = bank.selectAccountOperation(); // prompt user to select/add/remove account or exit program
-			if(!bank.addRequest.equals("")) // does user want to add an account?
-				bank.addAccount();
-			else if(bank.removeRequest) // does user want to remove an account?
-				bank.removeAccount();
+			chargeOpInterface.resetAll();
+			chargeOpInterface.displayAccounts();
+			selected = chargeOpInterface.selectAccountOperation(); // prompt user to select/add/remove account or exit program
+			if(!chargeOpInterface.addRequest.equals("")) // does user want to add an account?
+				chargeOpInterface.addAccount();
+			else if(chargeOpInterface.removeRequest) // does user want to remove an account?
+				chargeOpInterface.removeAccount();
 			else if(selected) // did user successfully select existing account?
 			{
-				while(bank.exitAccountRequest == false) // loops until user wants to exit account selected
+				while(chargeOpInterface.exitAccountRequest == false) // loops until user wants to exit account selected
 				{
-					bank.displayMonths();
-					selected = bank.selectMonthOperation(); // prompt user to select/add/remove month or exit account
-					if(!bank.addRequest.equals("")) // does user want to add a month?
-						bank.addMonth();
-					else if(bank.removeRequest) // does user want to remove a month?
-						bank.removeMonth();
+					chargeOpInterface.displayMonths();
+					selected = chargeOpInterface.selectMonthOperation(); // prompt user to select/add/remove month or exit account
+					if(!chargeOpInterface.addRequest.equals("")) // does user want to add a month?
+						chargeOpInterface.addMonth();
+					else if(chargeOpInterface.removeRequest) // does user want to remove a month?
+						chargeOpInterface.removeMonth();
 					else if(selected) // did user successfully select existing month in selected account?
 					{
-						while(bank.exitMonthRequest == false) // loops until user wants to exit month selected
+						while(chargeOpInterface.exitMonthRequest == false) // loops until user wants to exit month selected
 						{
-							bank.displayCharges();
-							bank.selectChargeOperation(); // prompt user to add/remove charge or exit month
-							if(!bank.addRequest.equals("")) // does user want to add a charge?
-								bank.addCharge();
-							else if(bank.removeRequest) // does user want to remove a charge?
-								bank.removeCharge();
+							chargeOpInterface.displayCharges();
+							chargeOpInterface.selectChargeOperation(); // prompt user to add/remove charge or exit month
+							if(!chargeOpInterface.addRequest.equals("")) // does user want to add a charge?
+								chargeOpInterface.addCharge();
+							else if(chargeOpInterface.removeRequest) // does user want to remove a charge?
+								chargeOpInterface.removeCharge();
 						}
-						bank.saveCharges(); // save charges list to month file
-						bank.resetMonth(); // exit month
+						chargeOpInterface.chargeFileManager.saveCharges(); // save charges list to month file
+						chargeOpInterface.resetMonth(); // exit month
 					}
 				}
 			}

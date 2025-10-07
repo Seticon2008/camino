@@ -23,7 +23,7 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.LinkedList;
 
-public class Bank
+public class ChargeFileManager
 {
 	private String mainPath = "C:/programs/camino";				// main directory
 	private String accountsPath = mainPath + "/cuentas";		// directory storing accounts
@@ -35,10 +35,10 @@ public class Bank
 										/* WARNING: IF CHANGES MADE TO LIST, EXECUTE saveCharges() METHOD BEFORE
 											EXITING MONTH */
 	
-	protected String infoMessage = "";		// gives helpful error message
+	public String infoMessage = "";		// gives helpful error message
 	
 	// constructor
-	public Bank()
+	public ChargeFileManager()
 	{
 		this.charges = new ChargeList();	// instantiates empty charges list
 	}

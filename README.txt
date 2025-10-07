@@ -1,13 +1,15 @@
-August 1, 2025
-Version 1.1.0
+August 6, 2025
+Version 1.1.1
 
 
 MAIN COMPONENTS:
-Bank.java: Superclass, handles all file operations such as creating and removing account files, month files within accounts, and charges within a month.
+ChargeFileManager.java: Superclass, handles all file operations such as creating and removing account files, month files within accounts, and charges within a month.
 
-BankInterface.java: Driver class, extends Bank.java, provides console UI for user to view database. Doesn't allow user to manipulate database.
+ChargeViewer.java: extends ChargeFileManager.java, provides essential console UI methods inherited by driver classes
 
-BankOpInterface.java: Driver class, extends BankInterface.java, provides console UI for user to view database as well as add and remove accounts, months within accounts, and charges within months.
+ChargeInterface.java: Driver class, extends ChargeViewer.java, provides console UI for user to view database. Doesn't allow user to manipulate database.
+
+ChargeOpInterface.java: Driver class, extends ChargeViewer.java, provides console UI for user to view database as well as add and remove accounts, months within accounts, and charges within months.
 
 
 THE USER CAN:
