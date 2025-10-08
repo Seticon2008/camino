@@ -1,5 +1,5 @@
-August 6, 2025
-Version 1.1.1
+September 23, 2025
+Version 1.2.0
 
 
 MAIN COMPONENTS:
@@ -10,6 +10,8 @@ ChargeViewer.java: extends ChargeFileManager.java, provides essential console UI
 ChargeInterface.java: Driver class, extends ChargeViewer.java, provides console UI for user to view database. Doesn't allow user to manipulate database.
 
 ChargeOpInterface.java: Driver class, extends ChargeViewer.java, provides console UI for user to view database as well as add and remove accounts, months within accounts, and charges within months.
+
+ChargeCalculatorInterface.java: Driver class, extends ChargeInterface.java, adds console UI for user to view a summary of the charges made in a month using ChargeCalculator.java.
 
 
 THE USER CAN:

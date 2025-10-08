@@ -34,7 +34,7 @@ public class Charge
 	}
 	
 	// getter method for charge amount
-	public double getAmount()
+	public float getAmount()
 	{
 		return this.amount;
 	}

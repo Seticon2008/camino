@@ -1,16 +1,15 @@
-August 6, 2025
-Version 1.1.1
+September 23, 2025
+Version 1.2.0
 
 
-CHANGED FILENAMES TO BE MORE ACCURATE:
--Bank.java -> ChargeFileManager.java
+NEW COMPONENTS:
+2 new components for viewing summaries of charges made in a month.
+-ChargeCalculator.java: Static class, gives summary of list of charges.
 
--BankInterface.java -> ChargeInterface.java
+-ChargeCalculatorInterface.java: Driver class, extends ChargeInterface.java, adds console UI for user to view a summary of the charges made in a month using ChargeCalculator.java.
 
--BankOpInterface.java -> ChargeOpInterface.java
+Changed access modifier of ChargeInterface.java request global variables from private to protected.
 
 
-ARCHITECTURE:
-Interface classes no longer extend ChargeFileManager.java. This was done to make ChargeFileManager.java more of a general-purpose class to operate on the database that will be used when a fully-fledged application is developed. The interface subclasses won't be needed for that.
-
-ChargeViewer.java class created to contain console UI display methods used by both interface classes. Both interface classes inherit this class. This means that ChargeOpInterface.java doesn't inherit unneeded methods from ChargeInterface.java like selectAccount() and selectMonth().
+BUG FIXES:
+Fixed Charge.java getAmount() return type from double to float.

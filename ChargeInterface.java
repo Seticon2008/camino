@@ -10,8 +10,8 @@ public class ChargeInterface extends ChargeViewer
 {
 	private Scanner scanner;	// scanner object for reading user input
 	
-	private boolean quitProgramRequest = false;	// if user wants to exit program
-	private boolean exitAccountRequest = false;	// if user wants to back out of account
+	protected boolean quitProgramRequest = false;	// if user wants to exit program
+	protected boolean exitAccountRequest = false;	// if user wants to back out of account
 	
 	// constructor
 	public ChargeInterface()
