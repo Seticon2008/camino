@@ -1,15 +1,43 @@
-September 23, 2025
-Version 1.2.0
+October 11, 2025
+Version 2.0.0
 
 
-NEW COMPONENTS:
-2 new components for viewing summaries of charges made in a month.
--ChargeCalculator.java: Static class, gives summary of list of charges.
+DATA MIGRATION TO DATABASE:
+Accounts, months, and charges are no longer stored as directories and files within the file system. Accounts and charges are now stored in an Oracle database server hosted on the server machine. The "accounts" table stores accounts, while the "charges" table stores registered charges, constrained to an existing account.
 
--ChargeCalculatorInterface.java: Driver class, extends ChargeInterface.java, adds console UI for user to view a summary of the charges made in a month using ChargeCalculator.java.
-
-Changed access modifier of ChargeInterface.java request global variables from private to protected.
+See "accountsDDL.sql" file for database structure
 
 
-BUG FIXES:
-Fixed Charge.java getAmount() return type from double to float.
+TRANSITION TO CLIENT-SERVER ARCHITECTURE:
+The project is no longer purposed for a single machine. Instead, accounts and charges are meant to be stored in a dedicated server accessible over the Internet. This removes the constraint of only being able to use one device to store data and the hassle of transferring files.
+
+The project is now split into two main programs: the server and the client. The server must be running in order for the client to function.
+
+Server Components:
+-Server.java: Driver class, runs 24/7 on server machine awaiting client connections to server socket. When connection with client established, passes client processing to ClientProcessor object to execute on available thread, then continues listening.
+
+-ClientProcessor.java: Contains ChargeDAO object. Validates client, then listens for client requests sent through socket. When client request received, calls appropriate operation on ChargeDAO object to access or manipulate database as desired by the client, then sends appropriate information back to client.
+
+-ChargeDAO.java: Connects to Oracle database hosted on server machine. Provides methods to operate on the database, used by ClientProcessor.java.
+
+
+Client Components:
+-ChargeClient.java: Contains socket connection to server, provides methods for sending requests to the server and for receiving lists of accounts and charges.
+
+-ChargeViewer.java: Contains ChargeClient object, uses ChargeClient object to get lists of accounts and charges, provides essential console UI methods inherited by driver classes to view those received lists.
+
+-ChargeInterface.java: Driver class, extends ChargeViewer.java, provides console UI for user to view database. Doesn't allow user to manipulate database.
+
+-ChargeOpInterface.java: Driver class, extends ChargeViewer.java, provides console UI for user to view database as well as add and remove accounts and charges.
+
+
+Other Components:
+-ClientRequest.java: Used by client program and sent over socket connection to tell server what information to client desires from the database. Received, read, and processed by server on other side of socket.
+
+
+TEMPORARILY REMOVED STATISTICAL CLASSES:
+ChargeCalculator.java and ChargeCalculatorInterface.java classes have been suspended for this release. They will be brought back in a future update.
+
+
+CHARGE IDS:
+ID of charge objects now hold a 10-digit integer (YYYYMMDD##). All charge IDs are completely unique within the database. Any charge is now identifiable by its ID.
