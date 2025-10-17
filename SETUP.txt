@@ -1,0 +1,92 @@
+October 11, 2025
+Version 2.0.0
+
+
+PROJECT DIRECTORY:
+
+1. Download project directory on both server/client machines
+
+2. Rename directory to "camino"
+
+3. Place directory in file system like so:
+
+-Linux: /programs/camino
+-Windows: C:\programs\camino
+
+
+ORACLE DATABASE:
+
+1. Install Oracle 19c on server machine.
+
+2. Run SQL Plus and log in to database.
+
+3. Execute the "accountsDDL.sql" script within SQL Plus using at-sign execution.
+
+4. Enter "exit" into SQL Plus
+
+
+CERTIFICATES:
+
+1. Open "generate_certs.sh/.bat" on server machine.
+
+2. Set CN variable to server IP address.
+
+3. Change filenames in "KEYSTORE", "CERT", "TRUSTSTORE" variables to desired filenames for server keystore and client truststore
+
+4. Change STOREPASS variable to desired password.
+
+5. Run "generate_certs.sh/.bat" script on server machine.
+
+6. Securely distribute files generated in "certs" directory on server machine to "certs" directory on client machines
+
+
+SERVER SETUP:
+
+1. Open "build_server.sh/.bat" on server machine.
+
+2. Change values in "KEYSTORE", "STOREPASS" variables to same values set in "generate_certs.sh/.bat".
+
+3. Open "src/server/Server.java" on server machine.
+
+4. Change port number in "PORT_NUMBER" global variable to desired port server will listen to.
+
+5. Forward the chosen port on your router and make sure that port is open on the server machine.
+
+6. Open "src/server/ClientProcessor.java" on server machine.
+
+7. Change value of "PASSWORD" global variable for desired password on server.
+
+8. Open "src/server/ChargeDAO.java" on server machine.
+
+9. Change value of "DB_URL" global variable to URL of Oracle database on server machine.
+-Format: "jdbc:oracle:thin:@localhost:[PORT]:[GLOBAL DATABASE NAME]
+
+10. Change value of "DB_USERNAME" global variable to username of Oracle Home User.
+
+11. Change value of "DB_PASSWORD" global variable to password of Oracle Home User.
+
+
+CLIENT SETUP:
+
+1. Open "build_client.sh/.bat" on client machine.
+
+2. Change values in "TRUSTSTORE", "STOREPASS" variables to same values set in "generate_certs.sh/.bat".
+
+3. Open "build_client_op.sh/.bat" on client machine.
+
+4. Repeat step 2.
+
+5. Open "src/client/ChargeClient.java" on client machine.
+
+6. Change value of "IP_ADDRESS" global variable to IP address of server
+
+7. Change port number in "PORT_NUMBER" global variable to desired port server listening to.
+
+
+TEST:
+
+1. Run "build_server.sh/.bat" script on server machine.
+
+2. Run "build_client.sh/.bat" or "build_client_op.sh/.bat" script on client machine
+
+3. On client machine, enter password for server.
